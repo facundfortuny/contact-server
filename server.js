@@ -9,6 +9,7 @@ const bodyParser = require('body-parser'),
 
 require('dotenv').config();
 
+app.use(express.static(path.join(__dirname, process.env.CLIENT_FOLDER)));
 
 // Parsers for POST data
 app.use(bodyParser.json());
