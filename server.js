@@ -25,9 +25,9 @@ let smtpTrans = nodemailer.createTransport(smtpTransport({
 }));
 
 // Catch all other routes and return the index file
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname, process.env.CLIENT_FOLDER, 'index.html'));
-// });
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, process.env.CLIENT_FOLDER, 'index.html'));
+});
 
 app.post('/contact', (req, res) => {
     console.log(req.body);
