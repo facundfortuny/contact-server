@@ -1,0 +1,7 @@
+# Project dependencies
+node_modules
+package-lock.json
+.env
+
+# Build directory
+.DS_Store
