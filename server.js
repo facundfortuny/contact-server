@@ -60,7 +60,8 @@ app.post('/contact', (req, res) => {
             return res.status(500).send('Error Bot Detected');
         }
     } else {
-        return res.status(500).send('Error Bot Detected');
+        console.log('Error occurred')
+        return res.status(500).send('Error ocurred');
     }
 });
 
