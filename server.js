@@ -51,17 +51,16 @@ app.post('/contact', (req, res) => {
             transporter.sendMail(mailOptions, function (err, info) {
                 if (err) {
                     console.log(err)
-                    res.end('Error');
-                } else {
-                    console.log(response);
-                    res.end('Send');
+                    return res.status(500).send(err)
                 }
+                res.json({ success: true })
             });
         } else {
-            res.end('Error');
+            console.log('Bot not detected')
+            return res.status(500).send('Error Bot Detected');
         }
     } else {
-        res.end('Error');
+        return res.status(500).send('Error Bot Detected');
     }
 });
 
