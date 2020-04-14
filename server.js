@@ -34,13 +34,13 @@ app.post('/contact', (req, res) => {
     const email = req.body.email;
     const message = req.body.message;
     const botDetected = req.body.fake;
-    const text = 'Nou missage de ' + name + ' amb email: ' + email + 'i comentari: ' + message;
-    const html = `<p>Nou missage de ${name} amb email: ${email}, i comentari:</p> <p>${message}</p>`;
+    const text = 'Nou missatge de contacte via web de la persona amb nom: ' + name + ' i email: ' + email + ', ha fet el comentari següent: ' + message;
+    const html = `<p>Hola,</p><p>Nou missatge de contacte via web de la persona amb nom: <b>${name}</b> i email: <b>${email}</b>, ha fet el comentari següent:</p> <p><b>${message}</b></p>`;
 
     const mailOptions = {
         from: process.env.SERVER_MAIL_USER,
         to: process.env.DESTINATION_MAIL,
-        subject: `Informacio email web de ${name}`,
+        subject: `Nou missatge email web de la persona ${name} amb email ${email}`,
         text: text,
         html: html
     };
