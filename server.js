@@ -3,7 +3,6 @@ const bodyParser = require('body-parser'),
     http = require('http'),
     nodemailer = require('nodemailer'),
     path = require('path'),
-    smtpTransport = require('nodemailer-smtp-transport'),
     app = express();
 
 
@@ -15,46 +14,43 @@ app.use(express.static(path.join(__dirname, process.env.CLIENT_FOLDER)));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-let smtpTrans = nodemailer.createTransport(smtpTransport({
-    host: 'smtp.gmail.com',
-    secureConnection: true,
-    port: 465,
-    auth: {
-        user: process.env.SERVER_MAIL_USER,
-        pass: process.env.SERVER_MAIL_PWD
-    }
-}));
-
 // Catch all other routes and return the index file
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, process.env.CLIENT_FOLDER, 'index.html'));
 });
 
+// email configuration
+let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: process.env.SERVER_MAIL_USER,
+        pass: process.env.SERVER_MAIL_PWD
+    }
+});
+
 app.post('/contact', (req, res) => {
-    console.log(req.body);
-    let name = req.body.name,
-        email = req.body.email,
-        subject = req.body.subject,
-        message = req.body.message,
-        botDetected = req.body.fake,
-        text = 'Nou missage de ' + name +
-            ' amb email: ' + email +
-            'i comentari: ' + message,
-        html = `<p>Nou missage de ${name} amb email: ${email}, i comentari:</p>
-                <p>${message}</p>`,
-        mailOptions = {
-            to: process.env.DESTINATION_MAIL,
-            subject: subject,
-            text: text,
-            html: html
-        };
+    console.log('contact request: ', req.body);
+    const name = req.body.name;
+    const email = req.body.email;
+    const message = req.body.message;
+    const botDetected = req.body.fake;
+    const text = 'Nou missage de ' + name + ' amb email: ' + email + 'i comentari: ' + message;
+    const html = `<p>Nou missage de ${name} amb email: ${email}, i comentari:</p> <p>${message}</p>`;
+
+    const mailOptions = {
+        from: process.env.SERVER_MAIL_USER,
+        to: process.env.DESTINATION_MAIL,
+        subject: `Informacio email web de ${name}`,
+        text: text,
+        html: html
+    };
+
     if (name && email && message) {
         if (!botDetected) {
-            subject = subject || 'Nou missage a camins ONG';
             res.message = 'Missatge enviat!';
-            smtpTrans.sendMail(mailOptions, (error, response) => {
-                if (error) {
-                    console.log(error);
+            transporter.sendMail(mailOptions, function (err, info) {
+                if (err) {
+                    console.log(err)
                     res.end('Error');
                 } else {
                     console.log(response);
